@@ -1,11 +1,18 @@
+var ROW_HEIGHT = 83,
+    COL_WIDTH = 101,
+    ROW_LENGTH = 6,
+    COL_LENGTH = 5;
+
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(row) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.x = 0;
+    this.y = row * ROW_HEIGHT;
 };
 
 // Update the enemy's position, required method for game
@@ -24,11 +31,30 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function () {
+    this.sprite = 'images/char-boy.png';
+    this.x = Math.floor(COL_LENGTH / 2) * COL_WIDTH;
+    this.y = (ROW_LENGTH - 1) * ROW_HEIGHT;
+};
+Player.prototype.update = function () {
 
+};
+Player.prototype.render = function () {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Player.prototype.handleInput = function () {
+
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [
+    new Enemy(1),
+    new Enemy(2),
+    new Enemy(3)
+];
+var player = new Player();
 
 
 
