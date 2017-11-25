@@ -1,3 +1,4 @@
+// Constants for the game
 var ROW_HEIGHT = 83,
     COL_WIDTH = 101,
     ROW_LENGTH = 6,
@@ -40,12 +41,15 @@ Enemy.prototype.render = function () {
 // a handleInput() method.
 var Player = function () {
     this.sprite = 'images/char-boy.png';
-    this.x = Math.floor(COL_LENGTH / 2) * COL_WIDTH;
-    this.y = (ROW_LENGTH - 1) * ROW_HEIGHT;
+    this.reset();
 };
 Player.prototype.update = function (x, y) {
     if (x >= 0 && x < COL_WIDTH * COL_LENGTH) this.x = x;
     if (y >= 0 && y < ROW_HEIGHT * ROW_LENGTH) this.y = y;
+};
+Player.prototype.reset = function () {
+    this.x = Math.floor(COL_LENGTH / 2) * COL_WIDTH;
+    this.y = (ROW_LENGTH - 1) * ROW_HEIGHT;
 };
 Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -64,6 +68,14 @@ Player.prototype.handleInput = function (direction) {
         case 'down':
             this.update(this.x, this.y + ROW_HEIGHT);
             break;
+    }
+};
+Player.prototype.caught = function () {
+    for (var i = 0; i < allEnemies.length; i++) {
+        if (allEnemies[i].y !== this.y) continue;
+        if (allEnemies[i].x > this.x - COL_WIDTH
+            && allEnemies[i].x < this.x + COL_WIDTH)
+            return true;
     }
 };
 
