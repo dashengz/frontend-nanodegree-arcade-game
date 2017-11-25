@@ -24,10 +24,12 @@ Enemy.prototype.update = function (dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
     this.x += dt * this.speed;
-    if (this.x > COL_WIDTH * COL_LENGTH) {
-        this.x = COL_WIDTH * (-1);
-        this.speed += (Math.random() * 10);
-    }
+    if (this.x > COL_WIDTH * COL_LENGTH)
+        this.resetEnemy();
+};
+Enemy.prototype.resetEnemy = function () {
+    this.x = COL_WIDTH * (-1);
+    this.speed += (Math.random() * 10);
 };
 
 // Draw the enemy on the screen, required method for game
@@ -41,13 +43,13 @@ Enemy.prototype.render = function () {
 var Player = function () {
     this.sprite = 'images/char-boy.png';
     this.lifeCount = 3;
-    this.resetLocation();
+    this.resetPlayer();
 };
 Player.prototype.update = function (x, y) {
     if (x >= 0 && x < COL_WIDTH * COL_LENGTH) this.x = x;
     if (y >= 0 && y < ROW_HEIGHT * ROW_LENGTH) this.y = y;
 };
-Player.prototype.resetLocation = function () {
+Player.prototype.resetPlayer = function () {
     this.x = Math.floor(COL_LENGTH / 2) * COL_WIDTH;
     this.y = (ROW_LENGTH - 1) * ROW_HEIGHT;
 };
@@ -68,16 +70,6 @@ Player.prototype.handleInput = function (direction) {
         case 'down':
             this.update(this.x, this.y + ROW_HEIGHT);
             break;
-    }
-};
-Player.prototype.caught = function () {
-    for (var i = 0; i < allEnemies.length; i++) {
-        if (allEnemies[i].y !== this.y) continue;
-        if (allEnemies[i].x > this.x - COL_WIDTH
-            && allEnemies[i].x < this.x + COL_WIDTH) {
-            this.lifeCount --;
-            return true;
-        }
     }
 };
 

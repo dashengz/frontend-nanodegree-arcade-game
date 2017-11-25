@@ -69,6 +69,18 @@ var Engine = (function(global) {
         main();
     }
 
+    function checkCollisions() {
+        for (var i = 0; i < allEnemies.length; i++) {
+            if (allEnemies[i].y !== player.y) continue;
+            if (allEnemies[i].x > player.x - COL_WIDTH
+                && allEnemies[i].x < player.x + COL_WIDTH) {
+                player.lifeCount --;
+                player.resetPlayer();
+                return true;
+            }
+        }
+    }
+
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
      * you implement your collision detection (when two entities occupy the
@@ -80,7 +92,7 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
     /* This is called by the update function and loops through all of the
@@ -162,7 +174,7 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        if (player.caught()) player.resetLocation();
+        if (checkCollisions()) player.resetPlayer();
         if (player.lifeCount === 0) request = false;
         if (request) win.requestAnimationFrame(reset);
     }
