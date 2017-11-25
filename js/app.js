@@ -15,7 +15,6 @@ var Enemy = function (row, speed, delayed) {
     this.x = COL_WIDTH * (delayed ? -5 : -1);
     this.y = row * ROW_HEIGHT;
     this.speed = speed;
-
 };
 
 // Update the enemy's position, required method for game
@@ -41,13 +40,14 @@ Enemy.prototype.render = function () {
 // a handleInput() method.
 var Player = function () {
     this.sprite = 'images/char-boy.png';
-    this.reset();
+    this.lifeCount = 3;
+    this.resetLocation();
 };
 Player.prototype.update = function (x, y) {
     if (x >= 0 && x < COL_WIDTH * COL_LENGTH) this.x = x;
     if (y >= 0 && y < ROW_HEIGHT * ROW_LENGTH) this.y = y;
 };
-Player.prototype.reset = function () {
+Player.prototype.resetLocation = function () {
     this.x = Math.floor(COL_LENGTH / 2) * COL_WIDTH;
     this.y = (ROW_LENGTH - 1) * ROW_HEIGHT;
 };
@@ -74,8 +74,10 @@ Player.prototype.caught = function () {
     for (var i = 0; i < allEnemies.length; i++) {
         if (allEnemies[i].y !== this.y) continue;
         if (allEnemies[i].x > this.x - COL_WIDTH
-            && allEnemies[i].x < this.x + COL_WIDTH)
+            && allEnemies[i].x < this.x + COL_WIDTH) {
+            this.lifeCount --;
             return true;
+        }
     }
 };
 
@@ -84,10 +86,10 @@ Player.prototype.caught = function () {
 // Place the player object in a variable called player
 var allEnemies = [
     new Enemy(1, 100),
-    new Enemy(3, 150, true),
+    new Enemy(1, 350, true),
     new Enemy(2, 300),
     new Enemy(3, 200),
-    new Enemy(1, 350, true)
+    new Enemy(3, 150, true)
 ];
 var player = new Player();
 
