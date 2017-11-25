@@ -1,3 +1,9 @@
 body {
     text-align: center;
 }
+div.app {
+    display: inline-block;
+    padding: 20px;
+    background-color: #faebd7;
+    margin: 2em;
+}

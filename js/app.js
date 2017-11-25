@@ -1,9 +1,3 @@
-// Constants for the game
-var ROW_HEIGHT = 83,
-    COL_WIDTH = 101,
-    ROW_LENGTH = 6,
-    COL_LENGTH = 5;
-
 // Enemies our player must avoid
 var Enemy = function (row, speed, delayed) {
     // Variables applied to each of our instances go here,
@@ -43,6 +37,7 @@ Enemy.prototype.render = function () {
 var Player = function () {
     this.sprite = 'images/char-boy.png';
     this.lifeCount = 3;
+    this.points = 0;
     this.resetPlayer();
 };
 Player.prototype.update = function (x, y) {
@@ -72,19 +67,36 @@ Player.prototype.handleInput = function (direction) {
             break;
     }
 };
+Player.prototype.renderStatus = function () {
+    ctx.save();
+    ctx.font = "30px monospace";
+    ctx.fillStyle = this.lifeCount ? "#000000" : "#ff0000";
+    ctx.fillText("Lives: " + this.lifeCount, 0, 40);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = "25px monospace";
+    ctx.fillStyle = "#666666";
+    ctx.textAlign = "end";
+    ctx.fillText("Score: " + this.points.toLocaleString("en-US", { minimumIntegerDigits: 6 }), 505, 40);
+    ctx.restore();
+};
+
+function createEnemies() {
+    return [
+        new Enemy(1, 100),
+        new Enemy(1, 350, true),
+        new Enemy(2, 300),
+        new Enemy(3, 200),
+        new Enemy(3, 150, true)
+    ];
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [
-    new Enemy(1, 100),
-    new Enemy(1, 350, true),
-    new Enemy(2, 300),
-    new Enemy(3, 200),
-    new Enemy(3, 150, true)
-];
+var allEnemies = createEnemies();
 var player = new Player();
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.

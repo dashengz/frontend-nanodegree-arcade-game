@@ -13,7 +13,7 @@
  * writing app.js a little simpler to work with.
  */
 
-var Engine = (function(global) {
+var Engine = (function (global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
@@ -21,13 +21,17 @@ var Engine = (function(global) {
     var doc = global.document,
         win = global.window,
         canvas = doc.createElement('canvas'),
+        gameArea = doc.createElement('div'),
         ctx = canvas.getContext('2d'),
         request = true,
         lastTime;
 
-    canvas.width = 505;
-    canvas.height = 606;
-    doc.body.appendChild(canvas);
+    gameArea.classList = 'app';
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
+    gameArea.appendChild(canvas);
+    doc.body.appendChild(gameArea);
+
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -74,7 +78,7 @@ var Engine = (function(global) {
             if (allEnemies[i].y !== player.y) continue;
             if (allEnemies[i].x > player.x - COL_WIDTH
                 && allEnemies[i].x < player.x + COL_WIDTH) {
-                player.lifeCount --;
+                player.lifeCount--;
                 player.resetPlayer();
                 return true;
             }
@@ -103,7 +107,7 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.update(dt);
         });
         player.update();
@@ -127,12 +131,12 @@ var Engine = (function(global) {
                 'images/grass-block.png',   // Row 1 of 2 of grass
                 'images/grass-block.png'    // Row 2 of 2 of grass
             ],
-            numRows = 6,
-            numCols = 5,
+            numRows = ROW_LENGTH,
+            numCols = COL_LENGTH,
             row, col;
-        
+
         // Before drawing, clear existing canvas
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -147,7 +151,7 @@ var Engine = (function(global) {
                  * so that we get the benefits of caching these images, since
                  * we're using them over and over.
                  */
-                ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
+                ctx.drawImage(Resources.get(rowImages[row]), col * COL_WIDTH, row * ROW_HEIGHT);
             }
         }
 
@@ -162,11 +166,12 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.render();
         });
 
         player.render();
+        player.renderStatus();
     }
 
     /* This function does nothing but it could have been a good place to
@@ -174,10 +179,25 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        if (checkCollisions()) player.resetPlayer();
-        if (player.lifeCount === 0) request = false;
         if (request) win.requestAnimationFrame(reset);
+        if (checkCollisions()) player.resetPlayer();
+        if (player.lifeCount === 0) {
+            ctx.drawImage(Resources.get('images/game-over.png'), 30, 80);
+            request = false;
+        }
     }
+
+    function restart() {
+        player.lifeCount = 3;
+        allEnemies = createEnemies();
+        request = true;
+        init();
+    }
+
+    doc.addEventListener('keyup', function (e) {
+        if (e.keyCode === 13 && !player.lifeCount)
+            restart();
+    });
 
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
@@ -188,7 +208,9 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/Heart.png',
+        'images/game-over.png'
     ]);
     Resources.onReady(init);
 
