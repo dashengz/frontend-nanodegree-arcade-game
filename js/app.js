@@ -5,7 +5,7 @@ var Enemy = function (row, speed, delayed) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    this.sprite = 'images/char-boy.png';
     this.x = COL_WIDTH * (delayed ? -5 : -1);
     this.y = row * ROW_HEIGHT;
     this.speed = speed;
@@ -35,9 +35,9 @@ Enemy.prototype.render = function () {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function () {
-    this.sprite = 'images/char-boy.png';
+    this.sprite = 'images/char-princess-girl.png';
     this.lifeCount = 3;
-    this.points = 0;
+    this.score = 0;
     this.resetPlayer();
 };
 Player.prototype.update = function (x, y) {
@@ -78,17 +78,16 @@ Player.prototype.renderStatus = function () {
     ctx.font = "25px monospace";
     ctx.fillStyle = "#666666";
     ctx.textAlign = "end";
-    ctx.fillText("Score: " + this.points.toLocaleString("en-US", { minimumIntegerDigits: 6 }), 505, 40);
+    ctx.fillText("Score: " + this.score.toLocaleString("en-US", { minimumIntegerDigits: 6 }), 505, 40);
     ctx.restore();
 };
 
 function createEnemies() {
     return [
-        new Enemy(1, 100),
-        new Enemy(1, 350, true),
-        new Enemy(2, 300),
-        new Enemy(3, 200),
-        new Enemy(3, 150, true)
+        new Enemy(1, 125),
+        new Enemy(1, 250, true),
+        new Enemy(2, 150),
+        new Enemy(3, 100)
     ];
 }
 

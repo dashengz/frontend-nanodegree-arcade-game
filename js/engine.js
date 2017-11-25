@@ -24,6 +24,8 @@ var Engine = (function (global) {
         gameArea = doc.createElement('div'),
         ctx = canvas.getContext('2d'),
         request = true,
+        added = false,
+        last = false,
         lastTime;
 
     gameArea.classList = 'app';
@@ -78,8 +80,6 @@ var Engine = (function (global) {
             if (allEnemies[i].y !== player.y) continue;
             if (allEnemies[i].x > player.x - COL_WIDTH
                 && allEnemies[i].x < player.x + COL_WIDTH) {
-                player.lifeCount--;
-                player.resetPlayer();
                 return true;
             }
         }
@@ -156,6 +156,7 @@ var Engine = (function (global) {
         }
 
         renderEntities();
+        renderSignals();
     }
 
     /* This function is called by the render function and is called on each game
@@ -174,16 +175,42 @@ var Engine = (function (global) {
         player.renderStatus();
     }
 
+    function renderSignals() {
+        if (player.y === 0) {
+            ctx.fillStyle = "rgba(0,255,0,0.3)";
+            ctx.fillRect(player.x, player.y + 50, COL_WIDTH, ROW_HEIGHT);
+        }
+        if (checkCollisions()) {
+            ctx.fillStyle = "rgba(255,0,0,0.3)";
+            ctx.fillRect(player.x, player.y + 50, COL_WIDTH, ROW_HEIGHT);
+        }
+    }
+
     /* This function does nothing but it could have been a good place to
      * handle game reset states - maybe a new game menu or a game over screen
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
         if (request) win.requestAnimationFrame(reset);
-        if (checkCollisions()) player.resetPlayer();
+        if (!last && checkCollisions()) {
+            player.lifeCount--;
+            last = true;
+            setTimeout(function () {
+                player.resetPlayer();
+                last = false;
+            }, 500);
+        }
         if (player.lifeCount === 0) {
             ctx.drawImage(Resources.get('images/game-over.png'), 30, 80);
             request = false;
+        }
+        if (!added && player.y === 0) {
+            player.score += 100;
+            added = true;
+            setTimeout(function () {
+                player.resetPlayer();
+                added = false;
+            }, 1000);
         }
     }
 
@@ -209,7 +236,9 @@ var Engine = (function (global) {
         'images/grass-block.png',
         'images/enemy-bug.png',
         'images/char-boy.png',
+        'images/char-princess-girl.png',
         'images/Heart.png',
+        'images/Star.png',
         'images/game-over.png'
     ]);
     Resources.onReady(init);
