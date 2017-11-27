@@ -38,6 +38,9 @@ var Player = function () {
     this.sprite = 'images/char-princess-girl.png';
     this.lifeCount = 3;
     this.score = 0;
+    this.highScore = 0;
+    this.timeLeft = TIME_LIMIT;
+    this.startCountDown();
     this.resetPlayer();
 };
 Player.prototype.update = function (x, y) {
@@ -69,17 +72,37 @@ Player.prototype.handleInput = function (direction) {
 };
 Player.prototype.renderStatus = function () {
     ctx.save();
-    ctx.font = "30px monospace";
-    ctx.fillStyle = this.lifeCount ? "#000000" : "#ff0000";
+    ctx.font = "20px monospace";
+    ctx.fillStyle = "#666666";
+    ctx.fillText("Time Left: " + this.timeLeft, 0, 20);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = "20px monospace";
+    ctx.fillStyle = this.lifeCount ? "#666666" : "#ff0000";
     ctx.fillText("Lives: " + this.lifeCount, 0, 40);
     ctx.restore();
 
     ctx.save();
-    ctx.font = "25px monospace";
+    ctx.font = "20px monospace";
+    ctx.fillStyle = "#666666";
+    ctx.textAlign = "end";
+    ctx.fillText("High Score: " + this.highScore.toLocaleString("en-US", { minimumIntegerDigits: 6 }), 505, 20);
+    ctx.restore();
+
+    ctx.save();
+    ctx.font = "20px monospace";
     ctx.fillStyle = "#666666";
     ctx.textAlign = "end";
     ctx.fillText("Score: " + this.score.toLocaleString("en-US", { minimumIntegerDigits: 6 }), 505, 40);
     ctx.restore();
+};
+Player.prototype.startCountDown = function () {
+    var p = this;
+    var countDown = setInterval(function () {
+        if (p.timeLeft > 0) p.timeLeft --;
+        else clearInterval(countDown);
+    }, 1000);
 };
 
 function createEnemies() {

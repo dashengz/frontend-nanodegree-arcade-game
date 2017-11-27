@@ -198,9 +198,9 @@ var Engine = (function (global) {
             setTimeout(function () {
                 player.resetPlayer();
                 last = false;
-            }, 500);
+            }, 250);
         }
-        if (player.lifeCount === 0) {
+        if (!player.lifeCount || !player.timeLeft) {
             ctx.drawImage(Resources.get('images/game-over.png'), 30, 80);
             request = false;
         }
@@ -210,19 +210,23 @@ var Engine = (function (global) {
             setTimeout(function () {
                 player.resetPlayer();
                 added = false;
-            }, 1000);
+            }, 250);
         }
     }
 
     function restart() {
         player.lifeCount = 3;
+        player.timeLeft = TIME_LIMIT;
+        player.highScore = Math.max(player.highScore, player.score);
+        player.score = 0;
+        player.startCountDown();
         allEnemies = createEnemies();
         request = true;
         init();
     }
 
     doc.addEventListener('keyup', function (e) {
-        if (e.keyCode === 13 && !player.lifeCount)
+        if (e.keyCode === 13 && (!player.lifeCount || !player.timeLeft))
             restart();
     });
 
