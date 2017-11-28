@@ -99,9 +99,9 @@ Player.prototype.renderStatus = function () {
 };
 Player.prototype.startCountDown = function () {
     var p = this;
-    var countDown = setInterval(function () {
+    this.countDown = setInterval(function () {
         if (p.timeLeft > 0) p.timeLeft --;
-        else clearInterval(countDown);
+        else clearInterval(p.countDown);
     }, 1000);
 };
 

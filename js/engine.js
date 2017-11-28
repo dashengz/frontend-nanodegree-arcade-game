@@ -219,6 +219,7 @@ var Engine = (function (global) {
         player.timeLeft = TIME_LIMIT;
         player.highScore = Math.max(player.highScore, player.score);
         player.score = 0;
+        clearInterval(player.countDown);
         player.startCountDown();
         allEnemies = createEnemies();
         request = true;
